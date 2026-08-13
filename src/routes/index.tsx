@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import PageTransition from "@/components/PageTransition";
 import Hero from '@/components/Hero';
 import CTABanner from '@/components/CTABanner';
+import ClientJourney from '@/components/ClientJourney';
 import BentoGridSection from '@/components/BentoGridSection';
 import Features from '@/components/Features';
 import Services from '@/components/Services';
@@ -29,6 +30,7 @@ function IndexPage() {
       <main>
         <Hero />
         <CTABanner />
+        <ClientJourney />
         <BentoGridSection />
         <Features />
         <Services />
