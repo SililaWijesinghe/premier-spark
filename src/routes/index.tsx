@@ -1,24 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
+import PageTransition from "@/components/PageTransition";
+import Hero from '@/components/Hero';
+import CTABanner from '@/components/CTABanner';
+import BentoGridSection from '@/components/BentoGridSection';
+import Features from '@/components/Features';
+import Services from '@/components/Services';
+import OurWorks from '@/components/OurWorks';
+import ResultsSection from '@/components/ResultsSection';
+import FAQ from '@/components/FAQ';
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Digital Marketing Colombo | Premier Digital (Pvt) Ltd" },
+      { name: "description", content: "Looking for digital marketing Colombo services? Premier Digital builds fast, SEO-ready websites and high ROI campaigns for Sri Lankan businesses." },
+      { property: "og:title", content: "Digital Marketing Colombo | Premier Digital (Pvt) Ltd" },
+      { property: "og:description", content: "Looking for digital marketing Colombo services? Premier Digital builds fast, SEO-ready websites and high ROI campaigns for Sri Lankan businesses." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: IndexPage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function IndexPage() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <PageTransition>
+      <main>
+        <Hero />
+        <CTABanner />
+        <BentoGridSection />
+        <Features />
+        <Services />
+        <OurWorks isHomePage={true} initialLimit={6} />
+        <ResultsSection />
+        <FAQ />
+      </main>
+    </PageTransition>
   );
 }
