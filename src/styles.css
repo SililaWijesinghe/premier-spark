@@ -1,6 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -145,7 +146,6 @@
 
 
 /* ===== Premier Digital design system ===== */
-@plugin "@tailwindcss/typography";
 
 html, body {
   background-color: var(--color-pd-bg, #060B16);
