@@ -1,6 +1,6 @@
 import { ArrowRight, Zap } from 'lucide-react';
 import { WhatsAppIcon } from './icons/WhatsAppIcon';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { motion } from 'motion/react';
 
 export default function CTABanner() {

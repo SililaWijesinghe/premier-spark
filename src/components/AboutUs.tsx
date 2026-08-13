@@ -6,7 +6,7 @@ import {
   PenTool, Code, Shield, Award, Eye, Heart, Zap, Mail, Linkedin, ArrowRight,
   ThumbsUp, LayoutTemplate, BarChart3, ChevronLeft, ChevronRight
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 export default function AboutUs() {
   const [activeTeamIndex, setActiveTeamIndex] = useState(0);

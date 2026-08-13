@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { PenTool, Megaphone, MonitorPlay, Code, Search, Video, Calendar, Filter, X, CheckCircle2, ArrowRight, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 const services = [
   {

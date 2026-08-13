@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { Target, Users, Trophy, Globe, ArrowRight, Send, ExternalLink, RefreshCw, Laptop, Smartphone, Zap, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 
 const tabs = ["All Projects", "Web Design", "Web Application", "Branding & Identity", "Digital Marketing"];
 

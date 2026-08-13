@@ -1,7 +1,7 @@
 import { Send, User, Mail, Phone, Building2, Zap, Volume2, VolumeX, Play } from 'lucide-react';
 import { WhatsAppIcon } from './icons/WhatsAppIcon';
 import { motion, useMotionValue, useTransform, useSpring, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import React, { useState, useEffect, useRef } from 'react';
 import Logo from './Logo';
 

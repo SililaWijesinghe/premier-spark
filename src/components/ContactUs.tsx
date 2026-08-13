@@ -15,7 +15,7 @@ import {
   Mic, Zap, Map as MapIcon
 } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { WhatsAppIcon } from './icons/WhatsAppIcon';
 
 export default function ContactUs() {

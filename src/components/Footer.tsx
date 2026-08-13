@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import { Phone, Mail, MapPin, Facebook, Instagram, Linkedin, ArrowRight, Zap } from 'lucide-react';
 import { motion } from 'motion/react';
 import Logo from './Logo';
@@ -159,8 +159,8 @@ export default function Footer() {
         >
           <p className="text-center sm:text-left">&copy; {new Date().getFullYear()} Premier Digital (Pvt) Ltd. All rights reserved.</p>
           <div className="flex gap-6">
-            <Link to="/privacy" className="hover:text-[#A5B0C3] transition-colors">Privacy Policy</Link>
-            <Link to="/terms" className="hover:text-[#A5B0C3] transition-colors">Terms of Service</Link>
+            <Link to="/privacy-policy" className="hover:text-[#A5B0C3] transition-colors">Privacy Policy</Link>
+            <Link to="/terms-and-conditions" className="hover:text-[#A5B0C3] transition-colors">Terms of Service</Link>
           </div>
         </motion.div>
 
