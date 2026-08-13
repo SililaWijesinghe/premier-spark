@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import PageTransition from "@/components/PageTransition";
-import ServicesPage from '@/components/ServicesPage';
+import ServicesPageSection from '@/components/ServicesPage';
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/services")({
 function ServicesPage() {
   return (
     <PageTransition>
-      <main><ServicesPage /></main>
+      <main><ServicesPageSection /></main>
     </PageTransition>
   );
 }
