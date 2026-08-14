@@ -92,6 +92,65 @@ const STEPS = [
   { x: 930, y: 862, text: 'Step 4: Loyalty' },
 ];
 
+type MobileStep = {
+  num: string;
+  step: string;
+  id: string;
+  title: string;
+  desc: string;
+  more: string;
+  media?: string;
+  art?: string;
+};
+
+const MOBILE_STEPS: MobileStep[] = [
+  {
+    num: '01',
+    step: 'Step 1: Insight',
+    id: 'strategy',
+    title: 'The Blueprint',
+    desc: 'Strategic conceptualization delivers intelligent digital marketing strategies.',
+    more: 'Engineered for maximum conversion and high ROI from day one.',
+    media: strategyImg.url,
+  },
+  {
+    num: '02',
+    step: 'Step 2: Clarity',
+    id: 'execution',
+    title: 'Creative Execution',
+    desc: 'Campaigns, content and digital experiences built around your growth objectives.',
+    more: 'Every asset is crafted to convert and scale across channels.',
+    media: executionImg.url,
+  },
+  {
+    num: '03',
+    step: 'Step 3: Depth',
+    id: 'precision',
+    title: 'The Precision Engine',
+    desc: 'Data-driven marketing campaigns continuously optimized using performance insights.',
+    more: 'Precision targeting backed by advanced analytics and continuous optimization.',
+    art: shield.url,
+  },
+  {
+    num: '04',
+    step: 'Step 4: Results',
+    id: 'results',
+    title: 'Market Domination',
+    desc: 'Campaign performance transformed into measurable business growth and stronger ROI.',
+    more: 'Campaign ROI: +45% average revenue lift across managed accounts.',
+    media: resultsImg.url,
+  },
+  {
+    num: '05',
+    step: 'Step 5: Loyalty',
+    id: 'acclaim',
+    title: 'Client Victory',
+    desc: 'Highly rated by clients. Built around measurable outcomes and long-term partnerships.',
+    more: 'A 5.0 star rated agency trusted for sustained market dominance.',
+    art: medal.url,
+  },
+];
+
 export default function ClientJourney() {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState<string | null>('acclaim');
