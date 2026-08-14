@@ -1,7 +1,16 @@
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, Users, RefreshCw, Search, Heart, TrendingUp } from 'lucide-react';
+import {
+  ArrowRight,
+  Users,
+  RefreshCw,
+  Search,
+  Heart,
+  TrendingUp,
+  ChevronRight,
+  ChevronsDown,
+} from 'lucide-react';
 import medal from '@/assets/medal-mvp.png.asset.json';
 import shield from '@/assets/shield-roi.png.asset.json';
 import strategyImg from '@/assets/journey-strategy.webp.asset.json';
@@ -33,6 +42,13 @@ const MILESTONES: Record<string, Milestone> = {
     title: 'The Blueprint (Strategy)',
     kicker: '1. Strategic Conceptualization',
     copy: 'Results-driven digital marketing strategies. Engineered for maximum conversion and high ROI.',
+  },
+  execution: {
+    id: 'execution',
+    label: 'Milestone 2',
+    title: 'Creative Execution',
+    kicker: 'Campaigns, content and digital experiences built around your growth objectives.',
+    copy: 'From concept to launch, every asset is crafted to convert and scale across channels.',
   },
   results: {
     id: 'results',
@@ -74,6 +90,65 @@ const STEPS = [
   { x: 668, y: 480, text: 'Step 2: Clarity' },
   { x: 772, y: 705, text: 'Step 3: Depth' },
   { x: 930, y: 862, text: 'Step 4: Loyalty' },
+];
+
+type MobileStep = {
+  num: string;
+  step: string;
+  id: string;
+  title: string;
+  desc: string;
+  more: string;
+  media?: string;
+  art?: string;
+};
+
+const MOBILE_STEPS: MobileStep[] = [
+  {
+    num: '01',
+    step: 'Step 1: Insight',
+    id: 'strategy',
+    title: 'The Blueprint',
+    desc: 'Strategic conceptualization delivers intelligent digital marketing strategies.',
+    more: 'Engineered for maximum conversion and high ROI from day one.',
+    media: strategyImg.url,
+  },
+  {
+    num: '02',
+    step: 'Step 2: Clarity',
+    id: 'execution',
+    title: 'Creative Execution',
+    desc: 'Campaigns, content and digital experiences built around your growth objectives.',
+    more: 'Every asset is crafted to convert and scale across channels.',
+    media: executionImg.url,
+  },
+  {
+    num: '03',
+    step: 'Step 3: Depth',
+    id: 'precision',
+    title: 'The Precision Engine',
+    desc: 'Data-driven marketing campaigns continuously optimized using performance insights.',
+    more: 'Precision targeting backed by advanced analytics and continuous optimization.',
+    art: shield.url,
+  },
+  {
+    num: '04',
+    step: 'Step 4: Results',
+    id: 'results',
+    title: 'Market Domination',
+    desc: 'Campaign performance transformed into measurable business growth and stronger ROI.',
+    more: 'Campaign ROI: +45% average revenue lift across managed accounts.',
+    media: resultsImg.url,
+  },
+  {
+    num: '05',
+    step: 'Step 5: Loyalty',
+    id: 'acclaim',
+    title: 'Client Victory',
+    desc: 'Highly rated by clients. Built around measurable outcomes and long-term partnerships.',
+    more: 'A 5.0 star rated agency trusted for sustained market dominance.',
+    art: medal.url,
+  },
 ];
 
 export default function ClientJourney() {
@@ -307,69 +382,93 @@ export default function ClientJourney() {
         </div>
 
         {/* ---------------- Mobile vertical journey ---------------- */}
-        <div className="relative mt-12 lg:hidden">
-          <div className="absolute bottom-2 left-[22px] top-2 w-px bg-[#E71919]/20" />
+        <div className="relative mt-10 lg:hidden">
+          {/* rail */}
+          <div className="absolute bottom-6 left-[26px] top-6 w-px bg-[#E71919]/20" />
           <motion.div
             style={{ scaleY: progress }}
-            className="absolute bottom-2 left-[21px] top-2 w-[2px] origin-top bg-gradient-to-b from-[#E71919] via-[#FF7A00] to-[#18C6D1] shadow-[0_0_12px_rgba(231,25,25,0.6)]"
+            className="absolute bottom-6 left-[25px] top-6 w-[2px] origin-top bg-gradient-to-b from-[#E71919] via-[#FF7A00] to-[#E71919] shadow-[0_0_12px_rgba(231,25,25,0.7)]"
           />
-          <div className="space-y-11 pl-14">
-            {[
-              { m: MILESTONES.strategy!, media: strategyImg.url, Icon: Users },
-              { m: MILESTONES.precision!, media: executionImg.url, Icon: Search, art: shield.url },
-              { m: MILESTONES.results!, media: resultsImg.url, Icon: TrendingUp },
-              { m: MILESTONES.acclaim!, art: medal.url, Icon: Heart, hero: true },
-            ].map(({ m, media, art, Icon, hero }) => (
-              <motion.button
-                type="button"
-                key={m.id}
-                initial={{ opacity: 0, y: 22 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                onClick={() => setActive(active === m.id ? null : m.id)}
-                className="relative block w-full text-left"
-              >
-                <span
-                  className={`absolute -left-[46px] top-1 grid h-8 w-8 place-items-center rounded-full border bg-[#0E1728] ${
-                    active === m.id
-                      ? 'border-[#FF7A00] shadow-[0_0_20px_rgba(255,122,0,0.5)]'
-                      : 'border-[#E71919]/70 shadow-[0_0_14px_rgba(231,25,25,0.45)]'
-                  }`}
-                >
-                  <Icon className={`h-3.5 w-3.5 ${active === m.id ? 'text-[#FF7A00]' : 'text-[#E71919]'}`} />
-                </span>
 
-                {art ? (
-                  <motion.img
-                    src={art}
-                    alt={m.title}
-                    loading="lazy"
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                    className={`mb-3 w-full object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.9)] ${
-                      hero ? 'h-44' : 'h-32'
+          <div className="space-y-8">
+            {MOBILE_STEPS.map(({ id, title, desc, more, media, art, step, num }, i) => {
+              const open = active === `${id}-${num}`;
+              return (
+                <motion.div
+                  key={num}
+                  initial={{ opacity: 0, y: 26 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{ duration: 0.55, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
+                  className="relative"
+                >
+                  {/* number badge */}
+                  <span className="absolute left-0 top-4 grid h-[52px] w-[52px] place-items-center rounded-full border-2 border-[#E71919] bg-[#060B16] text-base font-extrabold text-[#F8FAFC] shadow-[0_0_22px_rgba(231,25,25,0.55)]">
+                    {num}
+                  </span>
+                  {/* connector */}
+                  <span className="absolute left-[22px] top-[70px] flex items-center">
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#E71919] shadow-[0_0_10px_rgba(231,25,25,0.9)]" />
+                    <span className="h-px w-8 bg-[#E71919]/70" />
+                    <span className="h-2 w-2 rounded-full bg-[#E71919] shadow-[0_0_8px_rgba(231,25,25,0.9)]" />
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => setActive(open ? null : `${id}-${num}`)}
+                    aria-expanded={open}
+                    className={`ml-[68px] block w-[calc(100%-68px)] rounded-3xl border bg-gradient-to-br from-[#0E1728]/90 to-[#060B16]/90 p-3 text-left backdrop-blur-xl transition-all duration-500 ${
+                      open
+                        ? 'border-[#FF7A00]/70 shadow-[0_0_38px_rgba(255,122,0,0.28)]'
+                        : 'border-[#26354D] shadow-[0_0_22px_rgba(231,25,25,0.12)]'
                     }`}
-                  />
-                ) : media ? (
-                  <div className="relative mb-3 h-40 w-full overflow-hidden rounded-2xl border border-[#E71919]/35 shadow-[0_0_26px_rgba(231,25,25,0.18)]">
-                    <img src={media} alt={m.title} loading="lazy" className="h-full w-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#060B16] via-[#060B16]/30 to-transparent" />
-                  </div>
-                ) : null}
+                  >
+                    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+                      <div className="min-w-0">
+                        {art ? (
+                          <motion.img
+                            src={art}
+                            alt={title}
+                            loading="lazy"
+                            animate={{ y: [0, -6, 0] }}
+                            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                            className="mx-auto mb-3 h-36 w-full object-contain drop-shadow-[0_22px_40px_rgba(0,0,0,0.9)]"
+                          />
+                        ) : (
+                          <div className="relative mb-3 h-32 w-full overflow-hidden rounded-2xl border border-[#E71919]/30">
+                            <img src={media!} alt={title} loading="lazy" className="h-full w-full object-cover" />
+                            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#060B16]/70 via-transparent to-transparent" />
+                          </div>
+                        )}
+                        <p className="text-[12px] font-semibold text-[#E71919]">{step}</p>
+                        <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#F8FAFC]">{title}</h3>
+                        <p className="mt-1.5 text-[13px] leading-relaxed text-[#A5B0C3]">{desc}</p>
+                        <p
+                          className={`overflow-hidden text-[13px] leading-relaxed text-[#A5B0C3]/80 transition-all duration-500 ${
+                            open ? 'mt-2 max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                          }`}
+                        >
+                          {more}
+                        </p>
+                      </div>
+                      <span
+                        className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border transition-all duration-400 ${
+                          open
+                            ? 'rotate-90 border-[#FF7A00] text-[#FF7A00] shadow-[0_0_18px_rgba(255,122,0,0.45)]'
+                            : 'border-[#E71919] text-[#F8FAFC] shadow-[0_0_14px_rgba(231,25,25,0.45)]'
+                        }`}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </span>
+                    </div>
+                  </button>
 
-                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#A5B0C3]">{m.label}</p>
-                <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#F8FAFC]">{m.title}</h3>
-                <p className="mt-1.5 text-[13px] font-medium text-[#A5B0C3]">{m.kicker}</p>
-                <p
-                  className={`overflow-hidden text-[13px] leading-relaxed text-[#A5B0C3]/80 transition-all duration-500 ${
-                    active === m.id ? 'mt-2 max-h-40 opacity-100' : 'max-h-0 opacity-0'
-                  }`}
-                >
-                  {m.copy}
-                </p>
-              </motion.button>
-            ))}
+                  {i < MOBILE_STEPS.length - 1 && (
+                    <ChevronsDown className="absolute -bottom-6 left-[16px] h-5 w-5 text-[#E71919] drop-shadow-[0_0_6px_rgba(231,25,25,0.8)]" />
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 
