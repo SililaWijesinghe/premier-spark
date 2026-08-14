@@ -1,111 +1,114 @@
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, Compass, Rocket, LineChart, TrendingUp, Trophy } from 'lucide-react';
+import { ArrowRight, Users, RefreshCw, Search, Heart, TrendingUp } from 'lucide-react';
 import medal from '@/assets/medal-mvp.png.asset.json';
 import shield from '@/assets/shield-roi.png.asset.json';
 import strategyImg from '@/assets/journey-strategy.webp.asset.json';
 import executionImg from '@/assets/journey-execution.webp.asset.json';
 import resultsImg from '@/assets/journey-results.webp.asset.json';
 
+/* ------------------------------------------------------------------ */
+/*  Canvas: 1536 x 940 design space, everything positioned in percent   */
+/* ------------------------------------------------------------------ */
+const W = 1536;
+const OFFSET = 175;
+const H = 940 - OFFSET;
+const px = (x: number) => `${(x / W) * 100}%`;
+const py = (y: number) => `${(y / H) * 100}%`;
+const pyAbs = (y: number) => `${((y - OFFSET) / H) * 100}%`;
+
 type Milestone = {
-  step: string;
-  stage: string;
+  id: string;
+  label: string;
   title: string;
+  kicker: string;
   copy: string;
-  detail: string;
-  icon: typeof Compass;
-  media?: string;
-  art?: string;
 };
 
-const MILESTONES: Milestone[] = [
-  {
-    step: '01',
-    stage: 'Strategy',
-    title: 'The Blueprint',
-    copy: 'Strategic conceptualization delivers intelligent digital marketing strategies.',
-    detail: 'Market research, positioning and channel planning before a single rupee is spent.',
-    icon: Compass,
-    media: strategyImg.url,
+const MILESTONES: Record<string, Milestone> = {
+  strategy: {
+    id: 'strategy',
+    label: 'Milestone 1',
+    title: 'The Blueprint (Strategy)',
+    kicker: '1. Strategic Conceptualization',
+    copy: 'Results-driven digital marketing strategies. Engineered for maximum conversion and high ROI.',
   },
-  {
-    step: '02',
-    stage: 'Execution',
-    title: 'Creative Execution',
-    copy: 'Campaigns, content and digital experiences built around your growth objectives.',
-    detail: 'Web, design, video and paid media produced by one aligned in-house team.',
-    icon: Rocket,
-    media: executionImg.url,
+  results: {
+    id: 'results',
+    label: 'Milestone 4',
+    title: 'Market Domination (Results)',
+    kicker: '4. Proven Growth',
+    copy: 'Campaign performance transformed into measurable business growth. Campaign ROI: +45% revenue lift.',
   },
-  {
-    step: '03',
-    stage: 'Optimization',
-    title: 'The Precision Engine',
-    copy: 'Data-driven marketing campaigns continuously optimized using performance insights.',
-    detail: 'Weekly testing cycles on creative, audience and funnel performance.',
-    icon: LineChart,
-    art: shield.url,
+  precision: {
+    id: 'precision',
+    label: 'Milestone 5',
+    title: 'The Precision Engine (Data Foundation)',
+    kicker: '5. Underlying Precision',
+    copy: 'Data-driven marketing campaigns. Precision targeting backed by advanced analytics and continuous optimization.',
   },
-  {
-    step: '04',
-    stage: 'Results',
-    title: 'Market Domination',
-    copy: 'Campaign performance transformed into measurable business growth and stronger ROI.',
-    detail: 'Transparent reporting tied to revenue, not vanity metrics.',
-    icon: TrendingUp,
-    media: resultsImg.url,
+  acclaim: {
+    id: 'acclaim',
+    label: 'Milestone 6',
+    title: 'Client Victory (Acclaim)',
+    kicker: '6. Client Acclaim',
+    copy: 'Highly rated by clients. A 5.0 star rated agency built on long-term partnerships.',
   },
-  {
-    step: '05',
-    stage: 'Client Success',
-    title: 'Client Victory',
-    copy: 'Highly rated by clients. Built around measurable outcomes and long-term partnerships.',
-    detail: '70+ five-star reviews across Google, Meta and LinkedIn.',
-    icon: Trophy,
-    art: medal.url,
-  },
-];
+};
 
-const NODE_X = [100, 300, 500, 700, 900];
-const NODE_Y = [300, 210, 300, 210, 300];
-const PATH_D =
-  'M 20 300 L 100 300 C 200 300 200 210 300 210 C 400 210 400 300 500 300 C 600 300 600 210 700 210 C 800 210 800 300 900 300 L 980 300';
+/* Serpentine route, drawn in the same 1536x940 space */
+const PATH_MAIN =
+  'M 360 323 L 700 323 M 810 323 L 1245 323 M 360 350 L 360 610 M 760 445 L 760 500 M 760 548 C 760 640 620 660 700 740 C 730 772 745 760 755 757 M 790 757 C 900 757 980 828 1150 828 M 1205 828 L 1420 828 M 1177 800 C 1177 640 1097 620 1097 460';
+
+const NODES = [
+  { x: 360, y: 323, Icon: Users, key: 'strategy' },
+  { x: 760, y: 523, Icon: RefreshCw, key: 'precision' },
+  { x: 755, y: 757, Icon: Search, key: 'precision' },
+  { x: 1177, y: 828, Icon: Heart, key: 'acclaim' },
+  { x: 1245, y: 323, Icon: TrendingUp, key: 'results' },
+] as const;
+
+const STEPS = [
+  { x: 470, y: 300, text: 'Step 1: Insight' },
+  { x: 668, y: 480, text: 'Step 2: Clarity' },
+  { x: 772, y: 705, text: 'Step 3: Depth' },
+  { x: 930, y: 862, text: 'Step 4: Loyalty' },
+];
 
 export default function ClientJourney() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(4);
+  const [active, setActive] = useState<string | null>('acclaim');
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ['start 80%', 'end 60%'],
+    offset: ['start 85%', 'end 65%'],
   });
-  const progress = useSpring(scrollYProgress, { stiffness: 60, damping: 20, mass: 0.4 });
-  const glowOpacity = useTransform(progress, [0, 0.6, 1], [0.15, 0.4, 0.7]);
+  const progress = useSpring(scrollYProgress, { stiffness: 55, damping: 22, mass: 0.4 });
+  const glow = useTransform(progress, [0, 0.6, 1], [0.12, 0.35, 0.6]);
 
   return (
     <section
       ref={sectionRef}
       aria-labelledby="client-journey-heading"
-      className="relative overflow-hidden py-20 md:py-28"
+      className="relative overflow-hidden bg-[#060B16] py-20 md:py-28"
     >
-      {/* Atmosphere */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/4 top-1/3 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[#E71919]/10 blur-[140px]" />
+        <div className="absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[#E71919]/8 blur-[160px]" />
         <motion.div
-          style={{ opacity: glowOpacity }}
-          className="absolute right-0 bottom-0 h-[560px] w-[560px] translate-x-1/4 rounded-full bg-[#FF7A00]/10 blur-[150px]"
+          style={{ opacity: glow }}
+          className="absolute bottom-0 right-0 h-[560px] w-[560px] translate-x-1/4 rounded-full bg-[#FF7A00]/10 blur-[150px]"
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 mx-auto max-w-[1536px] px-4 sm:px-6 lg:px-10">
         {/* Intro */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto max-w-3xl text-center"
+          className="mx-auto max-w-4xl text-center"
         >
           <div className="mb-5 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.35em] text-[#E71919]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#E71919] shadow-[0_0_12px_rgba(231,25,25,0.9)]" />
@@ -114,122 +117,258 @@ export default function ClientJourney() {
           </div>
           <h2
             id="client-journey-heading"
-            className="text-3xl font-extrabold uppercase leading-[1.05] tracking-tight text-[#F8FAFC] sm:text-5xl md:text-6xl"
+            className="text-3xl font-extrabold uppercase leading-[1.05] tracking-tight text-[#F8FAFC] sm:text-5xl md:text-[3.6rem]"
           >
-            Your Journey to{' '}
-            <span className="bg-gradient-to-r from-[#E71919] via-[#FF7A00] to-[#E71919] bg-clip-text text-transparent">
-              Digital Victory
+            Your Journey to Digital Victory:
+            <br className="hidden sm:block" />{' '}
+            <span className="whitespace-nowrap">
+              The Premier{' '}
+              <span className="bg-gradient-to-r from-[#FF7A00] to-[#E71919] bg-clip-text text-transparent">
+                Digital Storyline.
+              </span>
             </span>
           </h2>
-          <p className="mt-5 text-base font-medium text-[#A5B0C3] sm:text-lg">
-            Follow our proven path from strategy to measurable growth.
+          <p className="mx-auto mt-5 max-w-2xl text-base font-medium text-[#A5B0C3] sm:text-lg">
+            Follow our proven flow from initial concept to sustained market dominance.
           </p>
         </motion.div>
 
-        {/* ---------- Desktop roadmap ---------- */}
-        <div className="relative mt-16 hidden h-[620px] lg:block">
+        {/* ---------------- Desktop cinematic map ---------------- */}
+        <div
+          className="relative mx-auto mt-10 hidden w-full lg:block"
+          style={{ aspectRatio: `${W} / ${H}` }}
+          onMouseLeave={() => setActive('acclaim')}
+        >
+          {/* route */}
           <svg
-            viewBox="0 0 1000 620"
-            preserveAspectRatio="none"
+            viewBox={`0 ${OFFSET} ${W} ${H}`}
             className="absolute inset-0 h-full w-full"
             aria-hidden="true"
+            fill="none"
           >
-            <defs>
-              <linearGradient id="pd-journey-line" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stopColor="#E71919" />
-                <stop offset="55%" stopColor="#FF7A00" />
-                <stop offset="100%" stopColor="#18C6D1" />
-              </linearGradient>
-            </defs>
             <path
-              d={PATH_D}
-              fill="none"
-              stroke="#26354D"
+              d={PATH_MAIN}
+              stroke="#E71919"
+              strokeOpacity={0.18}
               strokeWidth={2}
               vectorEffect="non-scaling-stroke"
             />
             <motion.path
-              d={PATH_D}
-              fill="none"
-              stroke="url(#pd-journey-line)"
-              strokeWidth={2.5}
+              d={PATH_MAIN}
+              stroke="#E71919"
+              strokeWidth={1.8}
               strokeLinecap="round"
               vectorEffect="non-scaling-stroke"
-              style={{ pathLength: progress, filter: 'drop-shadow(0 0 6px rgba(231,25,25,0.7))' }}
+              style={{ pathLength: progress, filter: 'drop-shadow(0 0 6px rgba(231,25,25,0.85))' }}
             />
-            {NODE_X.map((cx, i) => (
-              <motion.circle
-                key={cx}
-                cx={cx}
-                cy={NODE_Y[i]}
-                r={5}
-                fill={active === i ? '#FF7A00' : '#E71919'}
-                initial={{ opacity: 0.25, scale: 0.6 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+            {/* directional arrows */}
+            {[
+              { x: 556, y: 323, r: 0 },
+              { x: 975, y: 323, r: 0 },
+              { x: 360, y: 605, r: 90 },
+              { x: 1097, y: 470, r: -90 },
+              { x: 728, y: 757, r: 0 },
+            ].map((a, i) => (
+              <motion.path
+                key={i}
+                d="M -6 -6 L 6 0 L -6 6 Z"
+                fill="#E71919"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: 0.25 * i, duration: 0.5 }}
-                style={{ filter: 'drop-shadow(0 0 8px rgba(231,25,25,0.9))', transformOrigin: `${cx}px ${NODE_Y[i]}px` }}
+                transition={{ delay: 0.2 + i * 0.15 }}
+                transform={`translate(${a.x} ${a.y}) rotate(${a.r})`}
+                style={{ filter: 'drop-shadow(0 0 5px rgba(231,25,25,0.9))' }}
               />
             ))}
-            <circle r={4} fill="#18C6D1" style={{ filter: 'drop-shadow(0 0 8px #18C6D1)' }}>
-              <animateMotion dur="7s" repeatCount="indefinite" path={PATH_D} />
+            <path d="M 993 828 l 10 -10 l 10 10 l -10 10 Z" fill="#E71919" opacity={0.9} />
+            {/* travelling pulses */}
+            <circle r={3.5} fill="#18C6D1" style={{ filter: 'drop-shadow(0 0 8px #18C6D1)' }}>
+              <animateMotion dur="6s" repeatCount="indefinite" path="M 360 323 L 1245 323" />
             </circle>
-            <circle r={3} fill="#FF7A00" opacity={0.8} style={{ filter: 'drop-shadow(0 0 8px #FF7A00)' }}>
-              <animateMotion dur="7s" begin="2.5s" repeatCount="indefinite" path={PATH_D} />
+            <circle r={3} fill="#FF7A00" style={{ filter: 'drop-shadow(0 0 8px #FF7A00)' }}>
+              <animateMotion
+                dur="7s"
+                begin="1.2s"
+                repeatCount="indefinite"
+                path="M 760 548 C 760 640 620 660 700 740 C 730 772 745 760 755 757 C 900 757 980 828 1150 828"
+              />
             </circle>
           </svg>
 
-          {MILESTONES.map((m, i) => {
-            const above = NODE_Y[i] === 300;
-            const isActive = active === i;
-            const isFinal = i === MILESTONES.length - 1;
-            return (
-              <motion.div
-                key={m.step}
-                initial={{ opacity: 0, y: above ? 30 : -30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.6, delay: 0.15 * i, ease: [0.22, 1, 0.36, 1] }}
-                onMouseEnter={() => setActive(i)}
-                className="absolute w-[230px] -translate-x-1/2"
-                style={{
-                  left: `${NODE_X[i] / 10}%`,
-                  ...(above
-                    ? { bottom: `${((620 - NODE_Y[i]) / 620) * 100 + 4}%` }
-                    : { top: `${(NODE_Y[i] / 620) * 100 + 4}%` }),
-                }}
-              >
-                <MilestoneContent m={m} isActive={isActive} isFinal={isFinal} />
-              </motion.div>
-            );
-          })}
+          {/* icon nodes */}
+          {NODES.map(({ x, y, Icon, key }, i) => (
+            <motion.button
+              type="button"
+              key={`${x}-${y}`}
+              initial={{ opacity: 0, scale: 0.5 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.15 * i, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              onMouseEnter={() => setActive(key)}
+              onFocus={() => setActive(key)}
+              aria-label={MILESTONES[key]!.title}
+              className={`absolute grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border bg-[#0E1728] outline-none transition-all duration-400 ${
+                active === key
+                  ? 'scale-110 border-[#FF7A00] shadow-[0_0_28px_rgba(255,122,0,0.55)]'
+                  : 'border-[#E71919]/70 shadow-[0_0_16px_rgba(231,25,25,0.4)]'
+              }`}
+              style={{ left: px(x), top: pyAbs(y) }}
+            >
+              <Icon className={`h-4 w-4 ${active === key ? 'text-[#FF7A00]' : 'text-[#E71919]'}`} />
+            </motion.button>
+          ))}
+
+          {/* step labels */}
+          {STEPS.map((s, i) => (
+            <motion.span
+              key={s.text}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 + i * 0.12 }}
+              className="absolute -translate-y-1/2 whitespace-nowrap text-[13px] font-medium text-[#F8FAFC]/90"
+              style={{ left: px(s.x), top: pyAbs(s.y) }}
+            >
+              {s.text}
+            </motion.span>
+          ))}
+
+          {/* Milestone 1 – Strategy */}
+          <Media
+            src={strategyImg.url}
+            alt="Strategy huddle"
+            active={active === 'strategy'}
+            onHover={() => setActive('strategy')}
+            box={{ x: 60, y: 253, w: 258, h: 196 }}
+          />
+          <Caption m={MILESTONES.strategy!} active={active === 'strategy'} box={{ x: 60, y: 468, w: 290 }} />
+
+          {/* Precision shield art */}
+          <Art
+            src={shield.url}
+            alt="Precision strategy award"
+            active={active === 'precision'}
+            onHover={() => setActive('precision')}
+            box={{ x: 640, y: 230, w: 240, h: 215 }}
+            float={7}
+          />
+
+          {/* Milestone 4 – Results */}
+          <Media
+            src={resultsImg.url}
+            alt="Campaign ROI dashboard"
+            active={active === 'results'}
+            onHover={() => setActive('results')}
+            box={{ x: 1000, y: 258, w: 212, h: 178 }}
+          />
+          <Caption m={MILESTONES.results!} active={active === 'results'} box={{ x: 1288, y: 300, w: 232 }} />
+
+          {/* Milestone 5 – Precision */}
+          <Media
+            src={executionImg.url}
+            alt="Data-driven execution"
+            active={active === 'precision'}
+            onHover={() => setActive('precision')}
+            box={{ x: 398, y: 500, w: 226, h: 218 }}
+          />
+          <Caption m={MILESTONES.precision!} active={active === 'precision'} box={{ x: 398, y: 736, w: 268 }} />
+
+          {/* Milestone 6 – Acclaim */}
+          <Media
+            src={strategyImg.url}
+            alt="Client success briefing"
+            active={active === 'acclaim'}
+            onHover={() => setActive('acclaim')}
+            box={{ x: 902, y: 545, w: 218, h: 205 }}
+          />
+          <Caption m={MILESTONES.acclaim!} active={active === 'acclaim'} box={{ x: 1145, y: 578, w: 226 }} />
+
+          {/* Final reward – MVP medal */}
+          <Art
+            src={medal.url}
+            alt="Clients' Choice MVP award"
+            active={active === 'acclaim'}
+            onHover={() => setActive('acclaim')}
+            box={{ x: 1246, y: 636, w: 250, h: 240 }}
+            float={10}
+            hero
+          />
+
+          {/* decorative medal echo */}
+          <Art
+            src={medal.url}
+            alt=""
+            decorative
+            active={false}
+            box={{ x: 120, y: 676, w: 220, h: 200 }}
+            float={12}
+          />
         </div>
 
-        {/* ---------- Mobile / tablet roadmap ---------- */}
-        <div className="relative mt-14 lg:hidden">
-          <div className="absolute bottom-2 left-[22px] top-2 w-px bg-[#26354D]" />
+        {/* ---------------- Mobile vertical journey ---------------- */}
+        <div className="relative mt-12 lg:hidden">
+          <div className="absolute bottom-2 left-[22px] top-2 w-px bg-[#E71919]/20" />
           <motion.div
             style={{ scaleY: progress }}
             className="absolute bottom-2 left-[21px] top-2 w-[2px] origin-top bg-gradient-to-b from-[#E71919] via-[#FF7A00] to-[#18C6D1] shadow-[0_0_12px_rgba(231,25,25,0.6)]"
           />
-          <div className="space-y-12 pl-14">
-            {MILESTONES.map((m, i) => (
-              <motion.div
-                key={m.step}
-                initial={{ opacity: 0, y: 24 }}
+          <div className="space-y-11 pl-14">
+            {[
+              { m: MILESTONES.strategy!, media: strategyImg.url, Icon: Users },
+              { m: MILESTONES.precision!, media: executionImg.url, Icon: Search, art: shield.url },
+              { m: MILESTONES.results!, media: resultsImg.url, Icon: TrendingUp },
+              { m: MILESTONES.acclaim!, art: medal.url, Icon: Heart, hero: true },
+            ].map(({ m, media, art, Icon, hero }) => (
+              <motion.button
+                type="button"
+                key={m.id}
+                initial={{ opacity: 0, y: 22 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
+                viewport={{ once: true, amount: 0.35 }}
                 transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                onClick={() => setActive(i)}
-                className="relative"
+                onClick={() => setActive(active === m.id ? null : m.id)}
+                className="relative block w-full text-left"
               >
                 <span
-                  className={`absolute -left-[38px] top-2 h-3 w-3 rounded-full ring-4 ring-[#060B16] ${
-                    active === i ? 'bg-[#FF7A00]' : 'bg-[#E71919]'
-                  } shadow-[0_0_14px_rgba(231,25,25,0.9)]`}
-                />
-                <MilestoneContent m={m} isActive={active === i} isFinal={i === MILESTONES.length - 1} />
-              </motion.div>
+                  className={`absolute -left-[46px] top-1 grid h-8 w-8 place-items-center rounded-full border bg-[#0E1728] ${
+                    active === m.id
+                      ? 'border-[#FF7A00] shadow-[0_0_20px_rgba(255,122,0,0.5)]'
+                      : 'border-[#E71919]/70 shadow-[0_0_14px_rgba(231,25,25,0.45)]'
+                  }`}
+                >
+                  <Icon className={`h-3.5 w-3.5 ${active === m.id ? 'text-[#FF7A00]' : 'text-[#E71919]'}`} />
+                </span>
+
+                {art ? (
+                  <motion.img
+                    src={art}
+                    alt={m.title}
+                    loading="lazy"
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                    className={`mb-3 w-full object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.9)] ${
+                      hero ? 'h-44' : 'h-32'
+                    }`}
+                  />
+                ) : media ? (
+                  <div className="relative mb-3 h-40 w-full overflow-hidden rounded-2xl border border-[#E71919]/35 shadow-[0_0_26px_rgba(231,25,25,0.18)]">
+                    <img src={media} alt={m.title} loading="lazy" className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#060B16] via-[#060B16]/30 to-transparent" />
+                  </div>
+                ) : null}
+
+                <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#A5B0C3]">{m.label}</p>
+                <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#F8FAFC]">{m.title}</h3>
+                <p className="mt-1.5 text-[13px] font-medium text-[#A5B0C3]">{m.kicker}</p>
+                <p
+                  className={`overflow-hidden text-[13px] leading-relaxed text-[#A5B0C3]/80 transition-all duration-500 ${
+                    active === m.id ? 'mt-2 max-h-40 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  {m.copy}
+                </p>
+              </motion.button>
             ))}
           </div>
         </div>
@@ -240,16 +379,14 @@ export default function ClientJourney() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mt-16 flex justify-center lg:mt-8"
+          className="mt-14 flex justify-center lg:mt-2"
         >
           <Link
             to="/contact"
-            className="group inline-flex items-center gap-3 rounded-full border border-[#26354D] bg-[#0E1728]/80 px-8 py-4 text-sm font-bold uppercase tracking-[0.18em] text-[#F8FAFC] backdrop-blur-xl transition-all duration-300 hover:border-[#E71919]/60 hover:shadow-[0_0_35px_rgba(231,25,25,0.35)]"
+            className="group inline-flex items-center gap-4 rounded-full border border-[#E71919]/60 bg-[#0E1728]/60 px-9 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#F8FAFC] shadow-[0_0_22px_rgba(231,25,25,0.25)] backdrop-blur-xl transition-all duration-300 hover:border-[#FF7A00] hover:shadow-[0_0_45px_rgba(255,122,0,0.4)]"
           >
             Start Your Story With Us
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#E71919] to-[#FF7A00] transition-transform duration-300 group-hover:translate-x-1">
-              <ArrowRight className="h-4 w-4" />
-            </span>
+            <ArrowRight className="h-4 w-4 text-[#E71919] transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#FF7A00]" />
           </Link>
         </motion.div>
       </div>
@@ -257,61 +394,130 @@ export default function ClientJourney() {
   );
 }
 
-function MilestoneContent({
-  m,
-  isActive,
-  isFinal,
-}: {
-  m: Milestone;
-  isActive: boolean;
-  isFinal: boolean;
-}) {
-  const Icon = m.icon;
-  return (
-    <div className={`transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-80'}`}>
-      {m.art ? (
-        <motion.img
-          src={m.art}
-          alt={`${m.title} award artwork`}
-          loading="lazy"
-          animate={{ y: [0, -8, 0], rotate: isActive ? [0, 1.5, 0] : 0 }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          className={`mb-3 object-contain drop-shadow-[0_25px_45px_rgba(0,0,0,0.85)] ${
-            isFinal ? 'h-32 w-full lg:h-40' : 'h-24 w-full lg:h-28'
-          } ${isActive ? 'brightness-110' : 'brightness-90'} transition-[filter] duration-500`}
-        />
-      ) : m.media ? (
-        <div
-          className={`relative mb-3 h-24 w-full overflow-hidden rounded-2xl border transition-all duration-500 lg:h-28 ${
-            isActive ? 'border-[#E71919]/45 shadow-[0_0_28px_rgba(231,25,25,0.22)]' : 'border-[#26354D]'
-          }`}
-        >
-          <img src={m.media} alt={m.title} loading="lazy" className="h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#060B16] via-[#060B16]/40 to-transparent" />
-        </div>
-      ) : null}
+/* ------------------------------ pieces ------------------------------ */
 
-      <div className="flex items-center gap-2">
-        <Icon className={`h-4 w-4 ${isFinal ? 'text-[#FF7A00]' : 'text-[#E71919]'}`} />
-        <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#A5B0C3]">
-          {m.step} · {m.stage}
-        </span>
-      </div>
+type Box = { x: number; y: number; w: number; h?: number };
+
+function Media({
+  src,
+  alt,
+  box,
+  active,
+  onHover,
+}: {
+  src: string;
+  alt: string;
+  box: Box;
+  active: boolean;
+  onHover: () => void;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      onMouseEnter={onHover}
+      className="absolute"
+      style={{ left: px(box.x), top: pyAbs(box.y), width: px(box.w), height: py(box.h ?? 180) }}
+    >
+      <motion.div
+        animate={{ y: active ? -6 : 0, scale: active ? 1.03 : 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className={`h-full w-full overflow-hidden rounded-2xl border transition-all duration-500 ${
+          active
+            ? 'border-[#E71919] shadow-[0_0_45px_rgba(231,25,25,0.45)]'
+            : 'border-[#E71919]/35 shadow-[0_0_22px_rgba(231,25,25,0.16)]'
+        }`}
+      >
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          className={`h-full w-full object-cover transition-all duration-500 ${
+            active ? 'brightness-110' : 'brightness-75'
+          }`}
+        />
+        <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-t from-[#060B16]/70 via-transparent to-transparent" />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function Art({
+  src,
+  alt,
+  box,
+  active,
+  onHover,
+  float = 8,
+  hero = false,
+  decorative = false,
+}: {
+  src: string;
+  alt: string;
+  box: Box;
+  active: boolean;
+  onHover?: () => void;
+  float?: number;
+  hero?: boolean;
+  decorative?: boolean;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      whileInView={{ opacity: decorative ? 0.45 : 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+      onMouseEnter={onHover}
+      className="absolute"
+      style={{ left: px(box.x), top: pyAbs(box.y), width: px(box.w), height: py(box.h ?? 200) }}
+      aria-hidden={decorative || undefined}
+    >
+      <div
+        className={`pointer-events-none absolute inset-x-6 bottom-2 h-10 rounded-[50%] blur-2xl transition-opacity duration-500 ${
+          active ? 'bg-[#FF7A00]/45 opacity-100' : 'bg-[#E71919]/30 opacity-70'
+        }`}
+      />
+      <motion.img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        animate={{ y: [0, -float, 0], rotate: active && hero ? [0, 1.5, 0] : 0 }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
+        className={`relative h-full w-full object-contain drop-shadow-[0_30px_50px_rgba(0,0,0,0.9)] transition-[filter] duration-500 ${
+          active ? 'brightness-115' : 'brightness-90'
+        }`}
+      />
+    </motion.div>
+  );
+}
+
+function Caption({ m, box, active }: { m: Milestone; box: Box; active: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.3 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="absolute"
+      style={{ left: px(box.x), top: pyAbs(box.y), width: px(box.w) }}
+    >
+      <p className="text-[13px] font-medium text-[#A5B0C3]">{m.label}:</p>
       <h3
-        className={`mt-1.5 text-lg font-extrabold tracking-tight ${
-          isFinal ? 'bg-gradient-to-r from-[#E71919] to-[#FF7A00] bg-clip-text text-transparent' : 'text-[#F8FAFC]'
+        className={`mt-1 text-[19px] font-bold leading-snug tracking-tight transition-colors duration-500 ${
+          active ? 'text-[#F8FAFC]' : 'text-[#F8FAFC]/75'
         }`}
       >
         {m.title}
       </h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-[#A5B0C3]">{m.copy}</p>
-      <p
-        className={`overflow-hidden text-xs leading-relaxed text-[#A5B0C3]/70 transition-all duration-500 ${
-          isActive ? 'mt-2 max-h-24 opacity-100' : 'max-h-0 opacity-0'
+      <p className="mt-2.5 text-[13px] font-medium text-[#A5B0C3]">{m.kicker}</p>
+      <p className="mt-2 text-[13px] leading-relaxed text-[#A5B0C3]/80">{m.copy}</p>
+      <span
+        className={`mt-3 block h-px origin-left bg-gradient-to-r from-[#E71919] to-transparent transition-transform duration-500 ${
+          active ? 'scale-x-100' : 'scale-x-0'
         }`}
-      >
-        {m.detail}
-      </p>
-    </div>
+      />
+    </motion.div>
   );
 }
