@@ -72,7 +72,7 @@ const NODES = [
 const STEPS = [
   { x: 470, y: 300, text: 'Step 1: Insight' },
   { x: 668, y: 480, text: 'Step 2: Clarity' },
-  { x: 812, y: 715, text: 'Step 3: Depth' },
+  { x: 772, y: 705, text: 'Step 3: Depth' },
   { x: 930, y: 862, text: 'Step 4: Loyalty' },
 ];
 
