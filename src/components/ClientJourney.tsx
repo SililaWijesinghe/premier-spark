@@ -1,7 +1,16 @@
 import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'motion/react';
 import { Link } from '@tanstack/react-router';
-import { ArrowRight, Users, RefreshCw, Search, Heart, TrendingUp } from 'lucide-react';
+import {
+  ArrowRight,
+  Users,
+  RefreshCw,
+  Search,
+  Heart,
+  TrendingUp,
+  ChevronRight,
+  ChevronsDown,
+} from 'lucide-react';
 import medal from '@/assets/medal-mvp.png.asset.json';
 import shield from '@/assets/shield-roi.png.asset.json';
 import strategyImg from '@/assets/journey-strategy.webp.asset.json';
@@ -33,6 +42,13 @@ const MILESTONES: Record<string, Milestone> = {
     title: 'The Blueprint (Strategy)',
     kicker: '1. Strategic Conceptualization',
     copy: 'Results-driven digital marketing strategies. Engineered for maximum conversion and high ROI.',
+  },
+  execution: {
+    id: 'execution',
+    label: 'Milestone 2',
+    title: 'Creative Execution',
+    kicker: 'Campaigns, content and digital experiences built around your growth objectives.',
+    copy: 'From concept to launch, every asset is crafted to convert and scale across channels.',
   },
   results: {
     id: 'results',
