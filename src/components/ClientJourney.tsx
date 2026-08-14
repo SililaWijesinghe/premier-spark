@@ -141,7 +141,7 @@ export default function ClientJourney() {
         >
           {/* route */}
           <svg
-            viewBox={`0 0 ${W} ${H}`}
+            viewBox={`0 ${OFFSET} ${W} ${H}`}
             className="absolute inset-0 h-full w-full"
             aria-hidden="true"
             fill="none"
@@ -213,7 +213,7 @@ export default function ClientJourney() {
                   ? 'scale-110 border-[#FF7A00] shadow-[0_0_28px_rgba(255,122,0,0.55)]'
                   : 'border-[#E71919]/70 shadow-[0_0_16px_rgba(231,25,25,0.4)]'
               }`}
-              style={{ left: px(x), top: py(y) }}
+              style={{ left: px(x), top: pyAbs(y) }}
             >
               <Icon className={`h-4 w-4 ${active === key ? 'text-[#FF7A00]' : 'text-[#E71919]'}`} />
             </motion.button>
@@ -228,7 +228,7 @@ export default function ClientJourney() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 + i * 0.12 }}
               className="absolute -translate-y-1/2 whitespace-nowrap text-[13px] font-medium text-[#F8FAFC]/90"
-              style={{ left: px(s.x), top: py(s.y) }}
+              style={{ left: px(s.x), top: pyAbs(s.y) }}
             >
               {s.text}
             </motion.span>
@@ -419,7 +419,7 @@ function Media({
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={onHover}
       className="absolute"
-      style={{ left: px(box.x), top: py(box.y), width: px(box.w), height: py(box.h ?? 180) }}
+      style={{ left: px(box.x), top: pyAbs(box.y), width: px(box.w), height: py(box.h ?? 180) }}
     >
       <motion.div
         animate={{ y: active ? -6 : 0, scale: active ? 1.03 : 1 }}
@@ -471,7 +471,7 @@ function Art({
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={onHover}
       className="absolute"
-      style={{ left: px(box.x), top: py(box.y), width: px(box.w), height: py(box.h ?? 200) }}
+      style={{ left: px(box.x), top: pyAbs(box.y), width: px(box.w), height: py(box.h ?? 200) }}
       aria-hidden={decorative || undefined}
     >
       <div
@@ -501,7 +501,7 @@ function Caption({ m, box, active }: { m: Milestone; box: Box; active: boolean }
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="absolute"
-      style={{ left: px(box.x), top: py(box.y), width: px(box.w) }}
+      style={{ left: px(box.x), top: pyAbs(box.y), width: px(box.w) }}
     >
       <p className="text-[13px] font-medium text-[#A5B0C3]">{m.label}:</p>
       <h3
