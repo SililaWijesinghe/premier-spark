@@ -391,8 +391,8 @@ export default function ClientJourney() {
           />
 
           <div className="space-y-8">
-            {MOBILE_STEPS.map(({ m, media, art, step, num }, i) => {
-              const open = active === `${m.id}-${num}`;
+            {MOBILE_STEPS.map(({ id, title, desc, more, media, art, step, num }, i) => {
+              const open = active === `${id}-${num}`;
               return (
                 <motion.div
                   key={num}
@@ -415,7 +415,7 @@ export default function ClientJourney() {
 
                   <button
                     type="button"
-                    onClick={() => setActive(open ? null : `${m.id}-${num}`)}
+                    onClick={() => setActive(open ? null : `${id}-${num}`)}
                     aria-expanded={open}
                     className={`ml-[68px] block w-[calc(100%-68px)] rounded-3xl border bg-gradient-to-br from-[#0E1728]/90 to-[#060B16]/90 p-3 text-left backdrop-blur-xl transition-all duration-500 ${
                       open
@@ -428,7 +428,7 @@ export default function ClientJourney() {
                         {art ? (
                           <motion.img
                             src={art}
-                            alt={m.title}
+                            alt={title}
                             loading="lazy"
                             animate={{ y: [0, -6, 0] }}
                             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
@@ -436,19 +436,19 @@ export default function ClientJourney() {
                           />
                         ) : (
                           <div className="relative mb-3 h-32 w-full overflow-hidden rounded-2xl border border-[#E71919]/30">
-                            <img src={media!} alt={m.title} loading="lazy" className="h-full w-full object-cover" />
+                            <img src={media!} alt={title} loading="lazy" className="h-full w-full object-cover" />
                             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#060B16]/70 via-transparent to-transparent" />
                           </div>
                         )}
                         <p className="text-[12px] font-semibold text-[#E71919]">{step}</p>
-                        <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#F8FAFC]">{m.title}</h3>
-                        <p className="mt-1.5 text-[13px] leading-relaxed text-[#A5B0C3]">{m.kicker}</p>
+                        <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#F8FAFC]">{title}</h3>
+                        <p className="mt-1.5 text-[13px] leading-relaxed text-[#A5B0C3]">{desc}</p>
                         <p
                           className={`overflow-hidden text-[13px] leading-relaxed text-[#A5B0C3]/80 transition-all duration-500 ${
                             open ? 'mt-2 max-h-40 opacity-100' : 'max-h-0 opacity-0'
                           }`}
                         >
-                          {m.copy}
+                          {more}
                         </p>
                       </div>
                       <span
