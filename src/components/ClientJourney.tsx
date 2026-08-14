@@ -12,9 +12,11 @@ import resultsImg from '@/assets/journey-results.webp.asset.json';
 /*  Canvas: 1536 x 940 design space, everything positioned in percent   */
 /* ------------------------------------------------------------------ */
 const W = 1536;
-const H = 940;
+const OFFSET = 175;
+const H = 940 - OFFSET;
 const px = (x: number) => `${(x / W) * 100}%`;
 const py = (y: number) => `${(y / H) * 100}%`;
+const pyAbs = (y: number) => `${((y - OFFSET) / H) * 100}%`;
 
 type Milestone = {
   id: string;
